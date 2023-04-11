@@ -70,11 +70,6 @@ int main() {
     // Clamp the vals
     clamp(shipments, startEat, endEat);
 
-    for(int i = 0; i < shipments->size; i++) {
-        printf("\n%d Arrival: %d\n", i + 1, shipments->array[i].arrival);
-        printf("%d Expires: %d\n", i + 1, shipments->array[i].expires);
-    }
-
     // Clean up memory
     deleteHeap(shipments);
 
