@@ -16,8 +16,7 @@ typedef struct Shipment {
     int mass;
 } Shipment;
 
-// The alias for the type of data stored in the
-// heap
+// The alias for the type of data stored in the heap
 typedef Shipment HeapType;
 
 // The struct definition of the heap
