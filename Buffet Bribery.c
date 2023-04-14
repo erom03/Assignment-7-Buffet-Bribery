@@ -87,11 +87,13 @@ int main() {
         high += shipments[i].mass;
     }
 
-    double mid = (high - low) / 2;
+    double mid;
 
     // Evaulate optimal eating speed using a BS
     // ITERATIONS times
     for(int i = 0; i < ITERATIONS; i++) {
+        mid = (high - low) / 2;
+
         if(canDo(shipments, startEat, endEat, numShipments, mid)) {
             low = mid;
         } else {
