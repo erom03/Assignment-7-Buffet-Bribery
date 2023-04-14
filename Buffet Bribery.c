@@ -67,6 +67,11 @@ int main() {
 
     // Sort vals by arrival time followed by expiration
 
+    // Binary Search
+    for(int i = 0; i < 60; i++) {
+        
+    }
+
     // Clean up memory
     free(shipments);
 
