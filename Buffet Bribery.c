@@ -41,7 +41,7 @@ void dequeue(Heap * hp);
 HeapType front(Heap * hp);
 int isEmpty(Heap * hp);
 void clamp(Shipment * shipments, int start, int end, int numShipments);
-int canDo(Shipment * shipments, int start);
+int canDo(Shipment * shipments, int start, int end, int numShipments);
 int update();
 
 int main() {
@@ -88,7 +88,7 @@ int main() {
 
 // Return 1 if the guessed consumption rate works for the given array of shipments
 // Return 0 if the guessed consumption rade does not work
-int canDo(Shipment * shipments, int start) {
+int canDo(Shipment * shipments, int start, int end, int numShipments) {
     // Create a heap
     Heap * arrivedShips = createHeap();
 
@@ -98,6 +98,10 @@ int canDo(Shipment * shipments, int start) {
     // Special case the first shipment
     enqueue(arrivedShips, shipments[0]);
 
+    // Loop through the remaining shipments
+    for(int i = 1; i < numShipments; i++) {
+        
+    }
 
     return -1;  // Placeholder
 }
