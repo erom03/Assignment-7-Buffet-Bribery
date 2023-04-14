@@ -103,6 +103,9 @@ int canDo(Shipment * shipments, int start, int end, int numShipments) {
         
     }
 
+    // Clean up memory
+    deleteHeap(arrivedShips);
+
     return -1;  // Placeholder
 }
 
