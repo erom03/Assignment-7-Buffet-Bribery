@@ -27,6 +27,9 @@ typedef struct Heap {
 } Heap;
 
 // Prototypes
+void mergeSort(Shipment * arr, int size);
+// Dynamically create an array of the two subarrays merged
+Shipment * merge(Shipment * first, int firstSize, Shipment * second, int secondSize);
 int higherPriorityThan(HeapType first, HeapType second);
 Heap * createHeap();
 void deleteHeap(Heap * hp);
@@ -65,11 +68,12 @@ int main() {
     // Clamp the vals
     clamp(shipments, startEat, endEat, numShipments);
 
-    // Sort vals by arrival time followed by expiration
+    // Sort vals by arrival time using merge sort
+    mergeSort(shipments, numShipments);
 
     // Binary Search
     for(int i = 0; i < 60; i++) {
-        
+        break;  // temp statement
     }
 
     // Clean up memory
@@ -267,4 +271,62 @@ HeapType front(Heap * hp) {
 // Function to check if a heap is empty
 int isEmpty(Heap * hp) {
     return (hp->size == 0);
+}
+
+void mergeSort(Shipment * arr, int size) {
+    if (size <= 1) return;
+
+    // Getting the sizes of the two halves
+    int sizeLeft = size / 2;
+    int sizeRight = size - sizeLeft;
+
+    // Get the pointers into the two halves
+    Shipment * leftArr = arr;
+    Shipment * rightArr = &arr[sizeLeft];
+
+    // Sort the left side
+    mergeSort(leftArr, sizeLeft);
+
+    // Sort the right side
+    mergeSort(rightArr, sizeRight);
+
+    Shipment * result = merge(leftArr, sizeLeft, 
+                         rightArr, sizeRight);
+
+    // Copy result into arr
+    for (int i = 0; i < size; i++)
+        arr[i] = result[i];
+    
+    // Clean up the memory from result
+    free(result);
+}
+
+
+Shipment * merge(Shipment * first, int firstSize, Shipment * second, int secondSize) {
+    int total = firstSize + secondSize;
+    Shipment * result = (Shipment *) calloc(total, sizeof(Shipment));
+    
+    int firstPtr = 0;
+    int secondPtr = 0;
+    for (int i = 0; i < total; i++) {
+        if (firstPtr == firstSize) {
+            // Empty first array
+            result[i] = second[secondPtr];
+            secondPtr++;
+        } else if (secondPtr == secondSize) {
+            // Empty second array
+            result[i] = first[firstPtr];
+            firstPtr++;
+        } else if (first[firstPtr].arrival < second[secondPtr].arrival) {
+            // First is smaller
+            result[i] = first[firstPtr];
+            firstPtr++;
+        } else {
+            // Second was equal or smaller
+            result[i] = second[secondPtr];
+            secondPtr++;
+        }
+    }   
+
+    return result;
 }
