@@ -5,6 +5,7 @@
 #define PARENT(index) (((index)-1)/2)
 #define LEFT(index) (((index)*2)+1)
 #define RIGHT(index) (((index)*2)+2)
+#define ITERATIONS 75
 
 // Default size of the heap
 #define DEFAULT_CAP 8
@@ -41,7 +42,7 @@ void dequeue(Heap * hp);
 HeapType front(Heap * hp);
 int isEmpty(Heap * hp);
 void clamp(Shipment * shipments, int start, int end, int numShipments);
-int canDo(Shipment * shipments, int start, int end, int numShipments);
+int canDo(Shipment * shipments, int start, int end, int numShipments, int val);
 int update();
 
 int main() {
@@ -74,9 +75,31 @@ int main() {
     // 0 is a good low end
     // For high end I have a few options
     // Can add amount of food available and set that as high
-    for(int i = 0; i < 60; i++) {
-        break;  // temp statement
+    
+    // Assign low value for BS
+    double low = 0.0;
+
+    // Create high value for BS
+    double high = 0.0;
+
+    // Add mass values to get highest val for BS
+    for(int i = 0; i < numShipments; i++) {
+        high += shipments[i].mass;
     }
+
+    double mid = (high - low) / 2;
+
+    // Evaulate optimal eating speed using a BS
+    // ITERATIONS times
+    for(int i = 0; i < ITERATIONS; i++) {
+        if(canDo(shipments, startEat, endEat, numShipments, mid)) {
+            low = mid;
+        } else {
+            high = mid;
+        }
+    }
+
+    printf("%.8lf\n", mid);
 
     // Clean up memory
     free(shipments);
@@ -88,7 +111,7 @@ int main() {
 
 // Return 1 if the guessed consumption rate works for the given array of shipments
 // Return 0 if the guessed consumption rade does not work
-int canDo(Shipment * shipments, int start, int end, int numShipments) {
+int canDo(Shipment * shipments, int start, int end, int numShipments, int val) {
     // Create a heap
     Heap * arrivedShips = createHeap();
 
