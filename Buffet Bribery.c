@@ -39,6 +39,8 @@ void dequeue(Heap * hp);
 HeapType front(Heap * hp);
 int isEmpty(Heap * hp);
 void clamp(Heap * hp, int start, int end);
+int canDo(Heap * hp);
+int update(Heap * hp);
 
 int main() {
     // Get input for number of shipments
@@ -77,9 +79,39 @@ int main() {
 
 // Functions
 
+// Return 1 if the guessed consumption rate works for the given array of shipments
+// Return 0 if the guessed consumption rade does not work
+int canDo(Heap * hp) {
+    // Create a heap
+    Heap * temp = hp;
+
+    // Special case the first shipment
+
+
+    return -1;  // Placeholder
+}
+
+
+// Remove the shipments that can be consumed between the given old and new times
+// If any shipment expires before finishing consumption, then return 0
+// If no shipment is found to expire return 1
+int update(Heap * hp) {
+    // Keep track of the current time
+    
+    // Loop while there is some value in the heap
+    while(!isEmpty(hp)) {
+        // Determine the time required to finish consuming the current shipment
+    }
+
+    return -1;  // Placeholder
+}
+
 // Clamps vals to start and end times
 // Also removes food that expires too soon
 void clamp(Heap * hp, int start, int end) {
+    // Make sure the list contains values
+    assert(!isEmpty(hp));
+
     // Food is ordered by expiration date
     // Remove all food that expires before start time
     while(front(hp).expires < start)
@@ -124,9 +156,6 @@ Heap * createHeap() {
 
 // Function to delete all the memory in the heap
 void deleteHeap(Heap * hp) {
-    // TODO: Potentially free the values in the 
-    //       heap's array
-
     // Free the array itself
     free(hp->array);
 
