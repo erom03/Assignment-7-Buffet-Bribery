@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 // Macros for finding parent and children indices
 #define PARENT(index) (((index)-1)/2)
@@ -105,9 +104,9 @@ int update() {
     // Keep track of the current time
     
     // Loop while there is some value in the heap
-    while(!isEmpty(hp)) {
+    //while(!isEmpty(hp)) {
         // Determine the time required to finish consuming the current shipment
-    }
+    //}
 
     return -1;  // Placeholder
 }
