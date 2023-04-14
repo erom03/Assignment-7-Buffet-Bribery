@@ -13,7 +13,7 @@
 typedef struct Shipment {
     int arrival;
     int expires;
-    int mass;
+    double mass;
 } Shipment;
 
 // The alias for the type of data stored in the heap
