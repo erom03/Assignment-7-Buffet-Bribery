@@ -41,7 +41,7 @@ void dequeue(Heap * hp);
 HeapType front(Heap * hp);
 int isEmpty(Heap * hp);
 void clamp(Shipment * shipments, int start, int end, int numShipments);
-int canDo();
+int canDo(Shipment * shipments, int start);
 int update();
 
 int main() {
@@ -71,6 +71,9 @@ int main() {
     mergeSort(shipments, numShipments);
 
     // Binary Search
+    // 0 is a good low end
+    // For high end I have a few options
+    // Can add amount of food available and set that as high
     for(int i = 0; i < 60; i++) {
         break;  // temp statement
     }
@@ -85,12 +88,15 @@ int main() {
 
 // Return 1 if the guessed consumption rate works for the given array of shipments
 // Return 0 if the guessed consumption rade does not work
-int canDo() {
+int canDo(Shipment * shipments, int start) {
     // Create a heap
     Heap * arrivedShips = createHeap();
 
+    // Set current time to start time
+    int currTime = start;
+
     // Special case the first shipment
-    
+    enqueue(arrivedShips, shipments[0]);
 
 
     return -1;  // Placeholder
