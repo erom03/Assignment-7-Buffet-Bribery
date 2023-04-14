@@ -38,28 +38,22 @@ void enqueue(Heap * hp, HeapType value);
 void dequeue(Heap * hp);
 HeapType front(Heap * hp);
 int isEmpty(Heap * hp);
-void clamp(Heap * hp, int start, int end);
-int canDo(Heap * hp);
-int update(Heap * hp);
+void clamp(Shipment * shipments, int start, int end, int numShipments);
+int canDo();
+int update();
 
 int main() {
     // Get input for number of shipments
     int numShipments;
     scanf("%d", &numShipments);
 
-    // Create heap to hold shipments
-    Heap * shipments = createHeap();
+    // Create array to hold shipments
+    Shipment * shipments = (Shipment *) malloc (sizeof(Shipment));
 
     // Loop for input of each shipment
     for(int i = 0; i < numShipments; i++) {
-        // Used to store data to then enqueue
-        Shipment temp;
-
         // Get user input
-        scanf("%d %d %d", &temp.arrival, &temp.expires, &temp.mass);
-
-        // Enqueue the shipment to our priority queue
-        enqueue(shipments, temp);
+        scanf("%d %d %lf", &shipments[i].arrival, &shipments[i].expires, &shipments[i].mass);
     }
 
     // Vals to track start and end time for eating
@@ -69,10 +63,12 @@ int main() {
     scanf("%d %d", &startEat, &endEat);
 
     // Clamp the vals
-    clamp(shipments, startEat, endEat);
+    clamp(shipments, startEat, endEat, numShipments);
+
+    // Sort vals by arrival time followed by expiration
 
     // Clean up memory
-    deleteHeap(shipments);
+    free(shipments);
 
     return 0;
 }
@@ -81,11 +77,12 @@ int main() {
 
 // Return 1 if the guessed consumption rate works for the given array of shipments
 // Return 0 if the guessed consumption rade does not work
-int canDo(Heap * hp) {
+int canDo() {
     // Create a heap
-    Heap * temp = hp;
+    Heap * arrivedShips = createHeap();
 
     // Special case the first shipment
+    
 
 
     return -1;  // Placeholder
@@ -95,7 +92,7 @@ int canDo(Heap * hp) {
 // Remove the shipments that can be consumed between the given old and new times
 // If any shipment expires before finishing consumption, then return 0
 // If no shipment is found to expire return 1
-int update(Heap * hp) {
+int update() {
     // Keep track of the current time
     
     // Loop while there is some value in the heap
@@ -108,25 +105,23 @@ int update(Heap * hp) {
 
 // Clamps vals to start and end times
 // Also removes food that expires too soon
-void clamp(Heap * hp, int start, int end) {
-    // Make sure the list contains values
-    assert(!isEmpty(hp));
-
-    // Food is ordered by expiration date
+void clamp(Shipment * shipments, int start, int end, int numShipments) {
     // Remove all food that expires before start time
-    while(front(hp).expires < start)
-        dequeue(hp);
+    for(int i = 0; i < numShipments; i++) {
+        if(shipments[i].expires < start)
+            shipments[i].mass = 0;
+    }
 
     // Set arrivals before start to the start val
-    for(int i = 0; i < hp->size; i++) {
-        if(hp->array[i].arrival < start)
-            hp->array[i].arrival = start;
+    for(int i = 0; i < numShipments; i++) {
+        if(shipments[i].arrival < start)
+            shipments[i].arrival = start;
     }
 
     // Sets expire times after the end time to the end val
-    for(int i = 0; i < hp->size; i++) {
-        if(hp->array[i].expires > end)
-            hp->array[i].expires = end;
+    for(int i = 0; i < numShipments; i++) {
+        if(shipments[i].expires > end)
+            shipments[i].expires = end;
     }
 }
 
