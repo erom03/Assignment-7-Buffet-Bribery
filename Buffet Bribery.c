@@ -358,8 +358,17 @@ Shipment * merge(Shipment * first, int firstSize, Shipment * second, int secondS
             // First is smaller
             result[i] = first[firstPtr];
             firstPtr++;
+        } else if (first[firstPtr].arrival > second[secondPtr].arrival) {
+            // Second was smaller
+            result[i] = second[secondPtr];
+            secondPtr++;
+        } else if (first[firstPtr].expires < second[secondPtr].expires) {
+            // Both are equal, sort by expiration
+            // First expires sooner
+            result[i] = first[firstPtr];
+            firstPtr++;
         } else {
-            // Second was equal or smaller
+            // Second expires sooner or at the same time
             result[i] = second[secondPtr];
             secondPtr++;
         }
