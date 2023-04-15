@@ -43,7 +43,7 @@ HeapType front(Heap * hp);
 int isEmpty(Heap * hp);
 void clamp(Shipment * shipments, int start, int end, int numShipments);
 int canDo(Shipment * shipments, int start, int end, int numShipments, double rate);
-int update(Heap * arrivedShips, int old, int new);
+int update(Heap * arrivedShips, int old, int new, double rate);
 
 int main() {
     // Get input for number of shipments
@@ -123,7 +123,7 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
     // Loop through the remaining shipments
     for(int i = 1; i < numShipments; i++) {
         // Update the heap based on the time of the current shipment
-        if(!update(arrivedShips, currTime, shipments[i].arrival)) {
+        if(!update(arrivedShips, currTime, shipments[i].arrival, rate)) {
             // Handle if the update was invalid
             return 0;
         }
@@ -137,7 +137,7 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
 
     // Update time to last possible time
     // If consumption rate does not work, return 0
-    if(!update(arrivedShips, currTime, end))
+    if(!update(arrivedShips, currTime, end, rate))
         return 0;
 
 
@@ -153,16 +153,40 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
 // Remove the shipments that can be consumed between the given old and new times
 // If any shipment expires before finishing consumption, then return 0
 // If no shipment is found to expire return 1
-int update(Heap * arrivedShips, int old, int new) {
+int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
     // Keep track of the current time
-    int currTime = old;
+    int currTime = oldTime;
     
     // Loop while there is some value in the heap
     while(!isEmpty(arrivedShips)) {
         // Determine the time required to finish consuming the current shipment
+        int timeToFinish = front(arrivedShips).mass / rate;
+
+        // Determine the time when the shipment would finish consumption
+        int timeFinished = timeToFinish + currTime;
+
+        // Check if we cannot finish the shipment before spoiling
+        if(timeFinished > front(arrivedShips).expires)
+            return 0;
+
+        // Check if we can finish the shipment before the end of the update
+        if(timeFinished < newTime) {
+            // Update time
+            currTime = timeFinished;
+            
+            // Remove from heap
+            dequeue(arrivedShips);
+        } else {
+            // Update the remaining size of the shipment
+            arrivedShips->array[0].mass -= (newTime - oldTime) * rate;
+
+            // Stop the simulation
+            return 1;
+        }
     }
 
-    return -1;  // Placeholder
+    // If we reach here it means that we ran out of food before reaching our new time
+    return 0;
 }
 
 // Clamps vals to start and end times
