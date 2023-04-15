@@ -91,7 +91,9 @@ int main() {
     for(int i = 0; i < ITERATIONS; i++) {
         mid = (high - low) / 2;
 
-        if(canDo(shipments, startEat, endEat, numShipments, mid)) {
+        printf("%d\tMid: %f\n", i + 1, mid);
+
+        if(!canDo(shipments, startEat, endEat, numShipments, mid)) {
             low = mid;
         } else {
             high = mid;
@@ -124,7 +126,10 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
     for(int i = 1; i < numShipments; i++) {
         // Update the heap based on the time of the current shipment
         if(!update(arrivedShips, currTime, shipments[i].arrival, rate)) {
-            // Handle if the update was invalid
+            // Clean memory
+            deleteHeap(arrivedShips);    
+        
+            // Mark as not possible
             return 0;
         }
 
@@ -137,8 +142,13 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
 
     // Update time to last possible time
     // If consumption rate does not work, return 0
-    if(!update(arrivedShips, currTime, end, rate))
+    if(!update(arrivedShips, currTime, end, rate)) {
+        // Clean memory
+        deleteHeap(arrivedShips);    
+        
+        // Mark as not possible
         return 0;
+    }
 
 
     // Clean up memory
@@ -160,10 +170,11 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
     // Loop while there is some value in the heap
     while(!isEmpty(arrivedShips)) {
         // Determine the time required to finish consuming the current shipment
-        int timeToFinish = front(arrivedShips).mass / rate;
+        double timeToFinish = front(arrivedShips).mass / rate;
 
         // Determine the time when the shipment would finish consumption
-        int timeFinished = timeToFinish + currTime;
+        int timeFinished = (int)timeToFinish + currTime;
+        printf("Time to finish: %lf\n\n", timeToFinish);
 
         // Check if we cannot finish the shipment before spoiling
         if(timeFinished > front(arrivedShips).expires)
