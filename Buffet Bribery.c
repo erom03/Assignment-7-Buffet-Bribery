@@ -150,7 +150,6 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
         return 0;
     }
 
-
     // Clean up memory
     deleteHeap(arrivedShips);
 
