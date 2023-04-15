@@ -42,8 +42,8 @@ void dequeue(Heap * hp);
 HeapType front(Heap * hp);
 int isEmpty(Heap * hp);
 void clamp(Shipment * shipments, int start, int end, int numShipments);
-int canDo(Shipment * shipments, int start, int end, int numShipments, int val);
-int update();
+int canDo(Shipment * shipments, int start, int end, int numShipments, double rate);
+int update(Heap * arrivedShips, int old, int new);
 
 int main() {
     // Get input for number of shipments
@@ -72,10 +72,6 @@ int main() {
     mergeSort(shipments, numShipments);
 
     // Binary Search
-    // 0 is a good low end
-    // For high end I have a few options
-    // Can add amount of food available and set that as high
-    
     // Assign low value for BS
     double low = 0.0;
 
@@ -87,6 +83,7 @@ int main() {
         high += shipments[i].mass;
     }
 
+    // Val to store mid point
     double mid;
 
     // Evaulate optimal eating speed using a BS
@@ -113,7 +110,7 @@ int main() {
 
 // Return 1 if the guessed consumption rate works for the given array of shipments
 // Return 0 if the guessed consumption rade does not work
-int canDo(Shipment * shipments, int start, int end, int numShipments, int val) {
+int canDo(Shipment * shipments, int start, int end, int numShipments, double rate) {
     // Create a heap
     Heap * arrivedShips = createHeap();
 
@@ -125,26 +122,45 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, int val) {
 
     // Loop through the remaining shipments
     for(int i = 1; i < numShipments; i++) {
-        
+        // Update the heap based on the time of the current shipment
+        if(!update(arrivedShips, currTime, shipments[i].arrival)) {
+            // Handle if the update was invalid
+            return 0;
+        }
+
+        // Add current shipment to heap
+        enqueue(arrivedShips, shipments[i]);
+
+        // Update time
+        currTime = shipments[i].arrival;
     }
+
+    // Update time to last possible time
+    // If consumption rate does not work, return 0
+    if(!update(arrivedShips, currTime, end))
+        return 0;
+
 
     // Clean up memory
     deleteHeap(arrivedShips);
 
-    return -1;  // Placeholder
+    // If we've made it this far, 
+    // the consumption rate is valid
+    return 1;
 }
 
 
 // Remove the shipments that can be consumed between the given old and new times
 // If any shipment expires before finishing consumption, then return 0
 // If no shipment is found to expire return 1
-int update() {
+int update(Heap * arrivedShips, int old, int new) {
     // Keep track of the current time
+    int currTime = old;
     
     // Loop while there is some value in the heap
-    //while(!isEmpty(hp)) {
+    while(!isEmpty(arrivedShips)) {
         // Determine the time required to finish consuming the current shipment
-    //}
+    }
 
     return -1;  // Placeholder
 }
