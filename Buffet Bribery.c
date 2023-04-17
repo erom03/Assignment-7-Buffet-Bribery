@@ -172,7 +172,7 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
         double timeToFinish = front(arrivedShips).mass / rate;
 
         // Determine the time when the shipment would finish consumption
-        int timeFinished = (int)timeToFinish + currTime;
+        double timeFinished = timeToFinish + currTime;
         printf("Time to finish: %lf\n\n", timeToFinish);
 
         // Check if we cannot finish the shipment before spoiling
