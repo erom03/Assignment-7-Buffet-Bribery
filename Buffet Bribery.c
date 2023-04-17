@@ -5,7 +5,7 @@
 #define PARENT(index) (((index)-1)/2)
 #define LEFT(index) (((index)*2)+1)
 #define RIGHT(index) (((index)*2)+2)
-#define ITERATIONS 75
+#define ITERATIONS 30
 
 // Default size of the heap
 #define DEFAULT_CAP 8
@@ -51,7 +51,7 @@ int main() {
     scanf("%d", &numShipments);
 
     // Create array to hold shipments
-    Shipment * shipments = (Shipment *) malloc (sizeof(Shipment));
+    Shipment * shipments = (Shipment *) malloc (numShipments * sizeof(Shipment));
 
     // Loop for input of each shipment
     for(int i = 0; i < numShipments; i++) {
