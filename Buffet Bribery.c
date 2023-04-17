@@ -183,7 +183,8 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
         printf("Time to finish: %lf\n", timeToFinish);
         printf("currTime: %lf\n", currTime);
         printf("timeFinished: %lf\n", timeFinished);
-        printf("Expires: %d\n\n", front(arrivedShips).expires);
+        printf("Expires: %d\n", front(arrivedShips).expires);
+        printf("newTime: %d\n\n", newTime);
 
         // Check if we cannot finish the shipment before spoiling
         if(timeFinished > front(arrivedShips).expires) {
@@ -216,8 +217,6 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
             return 1;
         }
     }
-
-    printf("update returning 0\n\n");
 
     // If we reach here it means that we ran out of food before reaching our new time
     return 0;
