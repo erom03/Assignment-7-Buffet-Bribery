@@ -89,11 +89,13 @@ int main() {
     // Evaulate optimal eating speed using a BS
     // ITERATIONS times
     for(int i = 0; i < ITERATIONS; i++) {
-        mid = (high - low) / 2;
+        mid = (high + low) / 2.0;
 
-        printf("%d\tMid: %f\n", i + 1, mid);
+        printf("%d\tHigh: %lf\n", i + 1, high);
+        printf("%d\tMid: %lf\n", i + 1, mid);
+        printf("%d\tLow: %lf\n", i + 1, low);
 
-        if(!canDo(shipments, startEat, endEat, numShipments, mid)) {
+        if(canDo(shipments, startEat, endEat, numShipments, mid)) {
             low = mid;
         } else {
             high = mid;
@@ -119,11 +121,15 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
     // Set current time to start time
     int currTime = start;
 
-    // Special case the first shipment
-    enqueue(arrivedShips, shipments[0]);
+    // Check if first shipment expires before the start
+    int index = 0;
+    while(shipments[index].expires < start)
+        ++index;
+    
+    enqueue(arrivedShips, shipments[index]);
 
     // Loop through the remaining shipments
-    for(int i = 1; i < numShipments; i++) {
+    for(int i = index + 1; i < numShipments; i++) {
         // Update the heap based on the time of the current shipment
         if(!update(arrivedShips, currTime, shipments[i].arrival, rate)) {
             // Clean memory
@@ -164,7 +170,7 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
 // If no shipment is found to expire return 1
 int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
     // Keep track of the current time
-    int currTime = oldTime;
+    double currTime = (double)oldTime;
     
     // Loop while there is some value in the heap
     while(!isEmpty(arrivedShips)) {
@@ -173,27 +179,45 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
 
         // Determine the time when the shipment would finish consumption
         double timeFinished = timeToFinish + currTime;
-        printf("Time to finish: %lf\n\n", timeToFinish);
+        
+        printf("Time to finish: %lf\n", timeToFinish);
+        printf("currTime: %lf\n", currTime);
+        printf("timeFinished: %lf\n", timeFinished);
+        printf("Expires: %d\n\n", front(arrivedShips).expires);
 
         // Check if we cannot finish the shipment before spoiling
-        if(timeFinished > front(arrivedShips).expires)
-            return 0;
+        if(timeFinished > front(arrivedShips).expires) {
+            // Set current time to expire time
+            currTime = front(arrivedShips).expires;
+
+            // Remove expired food from priority queue
+            dequeue(arrivedShips);
+
+            // Continue checking the queue
+            //continue;
+            return 1;
+        }
 
         // Check if we can finish the shipment before the end of the update
         if(timeFinished < newTime) {
             // Update time
             currTime = timeFinished;
-            
+
             // Remove from heap
             dequeue(arrivedShips);
+
+            // Continue checking next value
+            continue;
         } else {
-            // Update the remaining size of the shipment
-            arrivedShips->array[0].mass -= (newTime - oldTime) * rate;
+            // Update the remaining size of the shipment TODO negative time
+            arrivedShips->array[0].mass -= (newTime - currTime) * rate;
 
             // Stop the simulation
             return 1;
         }
     }
+
+    printf("update returning 0\n\n");
 
     // If we reach here it means that we ran out of food before reaching our new time
     return 0;
