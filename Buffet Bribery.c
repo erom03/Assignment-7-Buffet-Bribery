@@ -5,7 +5,7 @@
 #define PARENT(index) (((index)-1)/2)
 #define LEFT(index) (((index)*2)+1)
 #define RIGHT(index) (((index)*2)+2)
-#define ITERATIONS 30
+#define ITERATIONS 60
 
 // Default size of the heap
 #define DEFAULT_CAP 8
@@ -126,18 +126,21 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
     while(shipments[index].expires < start)
         ++index;
     
+    // Add first item
     enqueue(arrivedShips, shipments[index]);
 
     // Loop through the remaining shipments
     for(int i = index + 1; i < numShipments; i++) {
+        // If the next ship is not arriving at the same time as the current ship
         // Update the heap based on the time of the current shipment
-        if(!update(arrivedShips, currTime, shipments[i].arrival, rate)) {
+        if(currTime != shipments[i].arrival && !update(arrivedShips, currTime, shipments[i].arrival, rate)) {
+            // If the update fails
             // Clean memory
             deleteHeap(arrivedShips);    
         
             // Mark as not possible
             return 0;
-        }
+        } // Else
 
         // Add current shipment to heap
         enqueue(arrivedShips, shipments[i]);
@@ -194,13 +197,16 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
             // Remove expired food from priority queue
             dequeue(arrivedShips);
 
-            // Continue checking the queue
-            //continue;
-            return 1;
+            // If that was our last value
+            // mark the rate as too slow
+            if(isEmpty(arrivedShips))
+                return 1;
+            else    // If not, check next shipment
+                continue;
         }
 
         // Check if we can finish the shipment before the end of the update
-        if(timeFinished < newTime) {
+        if(timeFinished <= newTime) {
             // Update time
             currTime = timeFinished;
 
@@ -210,7 +216,7 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
             // Continue checking next value
             continue;
         } else {
-            // Update the remaining size of the shipment TODO negative time
+            // Update the remaining size of the shipment
             arrivedShips->array[0].mass -= (newTime - currTime) * rate;
 
             // Stop the simulation
