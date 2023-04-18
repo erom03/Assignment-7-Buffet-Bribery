@@ -91,10 +91,6 @@ int main() {
     for(int i = 0; i < ITERATIONS; i++) {
         mid = (high + low) / 2.0;
 
-        printf("%d\tHigh: %lf\n", i + 1, high);
-        printf("%d\tMid: %lf\n", i + 1, mid);
-        printf("%d\tLow: %lf\n", i + 1, low);
-
         if(canDo(shipments, startEat, endEat, numShipments, mid)) {
             low = mid;
         } else {
@@ -183,12 +179,6 @@ int update(Heap * arrivedShips, int oldTime, int newTime, double rate) {
         // Determine the time when the shipment would finish consumption
         double timeFinished = timeToFinish + currTime;
         
-        printf("Time to finish: %lf\n", timeToFinish);
-        printf("currTime: %lf\n", currTime);
-        printf("timeFinished: %lf\n", timeFinished);
-        printf("Expires: %d\n", front(arrivedShips).expires);
-        printf("newTime: %d\n\n", newTime);
-
         // Check if we cannot finish the shipment before spoiling
         if(timeFinished > front(arrivedShips).expires) {
             // Set current time to expire time
