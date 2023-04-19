@@ -147,7 +147,7 @@ int canDo(Shipment * shipments, int start, int end, int numShipments, double rat
 
     // Update time to last possible time
     // If consumption rate does not work, return 0
-    if(!update(arrivedShips, currTime, end, rate)) {
+    if(currTime != end && !update(arrivedShips, currTime, end, rate)) {
         // Clean memory
         deleteHeap(arrivedShips);    
         
